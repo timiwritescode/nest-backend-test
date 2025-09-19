@@ -43,6 +43,9 @@ export class ExtensionsController {
         @Query('pageSize') pageSize: number
         
     ) {
+        page = page ? +page : 1,
+        pageSize = pageSize ? +pageSize : 12;
+        return await this.extensionService.getExtensions(page, pageSize, status)
         
     }
 

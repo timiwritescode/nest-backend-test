@@ -2,8 +2,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CreateExtensionDTO } from './dtos/create-extension.dto';
 import { SuccessResponseDTO } from 'src/shared/dtos/success-response.dto';
-import { ExtensionDTO } from './dtos/extension.dto';
-import { EXTENSION_CREATED } from './success-messages';
+import { ExtensionDTO, MultipleExtensionsDTO } from './dtos/extension.dto';
+import { EXTENSION_CREATED, EXTENSIONS_RETRIEVED_AND_PAGINATED } from './success-messages';
 import { AwsService } from 'src/shared/services/aws.service';
 import { generateFileHash } from 'src/shared/utils/util';
 
@@ -39,8 +39,24 @@ export class ExtensionsService {
         return await this.awsService.uploadSingleFile(image, imageHash)
     }
 
-    async getExtensions(page = 1, pageSize=12) {
+    async getExtensions(page = 1, pageSize=12, status=''): Promise<SuccessResponseDTO<MultipleExtensionsDTO>> {
+        const skip = (page - 1) * pageSize;
+        
+        const extensions = await this.prisma.extension.findMany({
+            skip,
+            take: pageSize,
+            orderBy: {
+                createdAt: 'desc'
+            },
+            where: status ? { status: { equals: status as any } } : undefined, 
+        })
 
+
+        return new SuccessResponseDTO(
+            EXTENSIONS_RETRIEVED_AND_PAGINATED,
+            HttpStatus.OK,
+            new MultipleExtensionsDTO(extensions)
+        )
     }
 
     async getExtensionById(extensionId: string) {}
