@@ -6,6 +6,8 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './core/filters/global-error.filter';
 import { ValidationError } from 'class-validator';
 import axios from 'axios';
+import { SwaggerModule } from '@nestjs/swagger';
+import { swaggerConfig } from './config/swagger.config';
 
 
 async function keepServerAlive(liveURL: string) {
@@ -25,10 +27,14 @@ async function bootstrap() {
     )
   }
   }))
+
+  const documentFactory = () => SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('docs', app, documentFactory);
+
   app.enableCors();
   app.use(helmet());
   app.setGlobalPrefix("/api/v1", {
-    exclude: ["/healthcheck"]
+    exclude: ["/healthcheck", "/docs"]
   })
   await app.listen(process.env.PORT || 3000);
 

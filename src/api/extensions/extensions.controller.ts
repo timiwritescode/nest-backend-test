@@ -8,14 +8,18 @@ import { ParseFormDataJsonPipe } from 'src/core/pipes/form-fields-transfomer.pip
 import { ImageValidationPipe } from 'src/core/pipes/image-validation.pipe';
 import { UpdateExtensionDTO } from './dtos/update-extension.dto';
 import { imageConfig } from './image-config';
+import { ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @Controller('extensions')
+@ApiTags("Extension")
 export class ExtensionsController {
     constructor(
         private readonly extensionService: ExtensionsService
     ) {}
 
     @Post()
+    @ApiBody({type: CreateExtensionDTO})
+    @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('avatar', {
         limits: {
             fileSize: imageConfig.maxSize,
@@ -39,6 +43,9 @@ export class ExtensionsController {
     }
 
     @Get()
+    @ApiQuery({name: "status", type: String, required: false})
+    @ApiQuery({name: "page", type: Number, required: false})
+    @ApiQuery({name: "pageSize", type: Number, required: false})
     async getAllExtensions(
         @Query('status') status: string,
         @Query('page') page: number,
@@ -59,6 +66,8 @@ export class ExtensionsController {
     }
 
     @Patch(":extensionId")
+    @ApiBody({type: UpdateExtensionDTO})
+    @ApiConsumes("multipart/form-data")
     @UseInterceptors(FileInterceptor('avatarImage', {
         limits: {fileSize: imageConfig.maxSize}
     }))
