@@ -18,8 +18,10 @@ export class ExtensionsService {
 
     async createExtension(dto: CreateExtensionDTO, image?: Express.Multer.File): Promise<SuccessResponseDTO<ExtensionDTO>> {
         let imageURL: string;
+
         if (image) {
-            imageURL = await this.uploadImageToAws(image)
+            imageURL = await this.uploadImageToAws(image);
+            dto["avatarURL"] = imageURL
         }
         const newExtension = await this.prisma.extension.create({
             data: {
@@ -27,7 +29,7 @@ export class ExtensionsService {
                 name: dto.name,
                 description: dto.description,
                 status: dto.status,
-                avatarURL: imageURL
+                avatarURL: dto["avatarURL"]
                 
             }
         });
@@ -39,6 +41,7 @@ export class ExtensionsService {
 
     private async uploadImageToAws(image: Express.Multer.File): Promise<string> {
         const imageHash = generateFileHash(image.buffer);
+        
         return await this.awsService.uploadSingleFile(image, imageHash)
     }
 
