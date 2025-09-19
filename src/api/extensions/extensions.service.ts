@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CreateExtensionDTO } from './dtos/create-extension.dto';
 import { SuccessResponseDTO } from 'src/shared/dtos/success-response.dto';
 import { ExtensionDTO } from './dtos/extension.dto';

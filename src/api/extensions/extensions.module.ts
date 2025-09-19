@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ExtensionsService } from './extensions.service';
 import { ExtensionsController } from './extensions.controller';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/core/prisma/prisma.service';
 import { AwsService } from 'src/shared/services/aws.service';
 
 @Module({
