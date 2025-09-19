@@ -3,7 +3,7 @@ import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CreateExtensionDTO } from './dtos/create-extension.dto';
 import { SuccessResponseDTO } from 'src/shared/dtos/success-response.dto';
 import { ExtensionDTO, MultipleExtensionsDTO } from './dtos/extension.dto';
-import { EXTENSION_CREATED, EXTENSION_RETRIEVED, EXTENSION_UPDATED, EXTENSIONS_RETRIEVED_AND_PAGINATED } from './success-messages';
+import { EXTENSION_CREATED, EXTENSION_DELETED, EXTENSION_RETRIEVED, EXTENSION_UPDATED, EXTENSIONS_RETRIEVED_AND_PAGINATED } from './success-messages';
 import { AwsService } from 'src/shared/services/aws.service';
 import { generateFileHash } from 'src/shared/utils/util';
 import { UpdateExtensionDTO } from './dtos/update-extension.dto';
@@ -108,7 +108,27 @@ export class ExtensionsService {
         } 
     }
 
-    async deleteExtension(extensionId: string) {
-        
+    async deleteExtension(extensionId: string): Promise<SuccessResponseDTO<void>> {
+        try {
+            await this.prisma.extension.delete({
+                where: {id: extensionId}
+            });
+
+        return new SuccessResponseDTO(
+            EXTENSION_DELETED,
+            HttpStatus.OK,
+            null
+        )            
+        } catch (error) {
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === 'P2025'
+            ) {
+                throw new NotFoundException(ERROR_EXTENSION_NOT_FOUND_MESSAGE);
+            };
+
+            throw error;
+        }
+
     }
 }

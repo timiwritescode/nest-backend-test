@@ -81,8 +81,10 @@ export class ExtensionsController {
     } 
 
     @Delete(":extensionId")
-    @HttpCode(HttpStatus.NO_CONTENT)
+    @HttpCode(HttpStatus.OK)
     async deleteExtension(
         @Param('extensionId') extensionId: string
-    ): Promise<void> {}
+    ): Promise<SuccessResponseDTO<void>> {
+        return await this.extensionService.deleteExtension(extensionId)
+    }
 }
