@@ -1,9 +1,9 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { CreateExtensionDTO } from './dtos/create-extension.dto';
 import { SuccessResponseDTO } from 'src/shared/dtos/success-response.dto';
 import { ExtensionDTO, MultipleExtensionsDTO } from './dtos/extension.dto';
-import { EXTENSION_CREATED, EXTENSIONS_RETRIEVED_AND_PAGINATED } from './success-messages';
+import { EXTENSION_CREATED, EXTENSION_RETRIEVED, EXTENSIONS_RETRIEVED_AND_PAGINATED } from './success-messages';
 import { AwsService } from 'src/shared/services/aws.service';
 import { generateFileHash } from 'src/shared/utils/util';
 
@@ -59,7 +59,19 @@ export class ExtensionsService {
         )
     }
 
-    async getExtensionById(extensionId: string) {}
+    async getExtensionById(extensionId: string): Promise<SuccessResponseDTO<ExtensionDTO>> {
+        const extension = await this.prisma.extension.findUnique({
+            where: {id: extensionId}
+        });
+        if (!extension) {
+            throw new BadRequestException("Extension does not exist")
+        }
+        return new SuccessResponseDTO(
+            EXTENSION_RETRIEVED,
+            HttpStatus.OK,
+            new ExtensionDTO(extension)
+        )
+    }
 
     async updateExtension(extensionId: string) {}
 

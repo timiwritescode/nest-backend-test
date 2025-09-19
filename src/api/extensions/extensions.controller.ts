@@ -52,8 +52,8 @@ export class ExtensionsController {
     @Get(":extensionId")
     async getExtensionById(
         @Param('extensionId') extensionId: string
-    ) {
-
+    ): Promise<SuccessResponseDTO<ExtensionDTO>> {
+        return await this.extensionService.getExtensionById(extensionId);
     }
 
     @Patch(":extensionId")

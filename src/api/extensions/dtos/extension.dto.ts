@@ -7,13 +7,15 @@ export class ExtensionDTO {
     status: string;
     description: string
     avatarUrl: string
+    dateCreated: string
 
     constructor(extension: Extension) {
         this.id = extension.id
         this.name = extension.name;
         this.status = extension.status;
         this.description = extension.description;
-        this.avatarUrl = extension.avatarURL
+        this.avatarUrl = extension.avatarURL;
+        this.dateCreated = extension.createdAt.toISOString();
     }
 
 }
