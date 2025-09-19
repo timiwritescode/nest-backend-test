@@ -35,9 +35,15 @@ importers:
       client:
         specifier: link:@types/prisma/client
         version: link:@types/prisma/client
+      deep-parse-json:
+        specifier: ^2.0.0
+        version: 2.0.0
       helmet:
         specifier: ^8.1.0
         version: 8.1.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       multer:
         specifier: ^2.0.2
         version: 2.0.2
@@ -1123,6 +1129,9 @@ packages:
     peerDependenciesMeta:
       supports-color:
         optional: true
+
+  deep-parse-json@2.0.0:
+    resolution: {integrity: sha512-tDr7ojkafPLqECGR5Jfwu33NAKiXPhxS0fTCXpTg9fkrRxJHYzDM/v6J5o1JMwsIEGjanB93U0+YB57G1SLTtg==}
 
   deepmerge-ts@7.1.5:
     resolution: {integrity: sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==}
@@ -3609,6 +3618,8 @@ snapshots:
   debug@4.4.3:
     dependencies:
       ms: 2.1.3
+
+  deep-parse-json@2.0.0: {}
 
   deepmerge-ts@7.1.5: {}
 

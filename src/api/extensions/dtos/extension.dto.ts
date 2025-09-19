@@ -11,6 +11,7 @@ export class ExtensionDTO {
         this.name = extension.name;
         this.status = extension.status;
         this.description = extension.description;
+        this.avatarUrl = extension.avatarURL
     }
 
 }

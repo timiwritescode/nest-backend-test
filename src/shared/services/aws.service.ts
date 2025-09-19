@@ -1,5 +1,5 @@
 import { ListObjectsCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 
@@ -8,6 +8,8 @@ export class AwsService {
     private client: S3Client;
     private bucketName: string;
     private s3Region: string;
+
+    private logger = new Logger(AwsService.name)
 
     constructor(private configService: ConfigService) {
         this.bucketName = this.configService.get("AWS_S3_BUCKET_NAME");
@@ -31,11 +33,13 @@ export class AwsService {
             const key = `${imageHash}/${file.originalname}`;
 
             // check if image already exists 
+            let url: string
+            this.logger.log("Uploading image to S3 bucket.........")
             if (await this.isFolderExistsInS3Bucket(imageHash)) {
-                return `https://${this.bucketName}.s3.amazonaws.com/${key}`
-            }
-            
-            const command = new PutObjectCommand({
+                this.logger.log('reusing image of matching buffer hash')
+                url = `https://${this.bucketName}.s3.amazonaws.com/${key}`
+            } else {
+                const command = new PutObjectCommand({
                 Bucket: this.bucketName,
                 Key: key,
                 Body: file.buffer,
@@ -50,12 +54,15 @@ export class AwsService {
             
             const uploadResult = await this.client.send(command);
             
-           return `https://${this.bucketName}.s3.amazonaws.com/${key}`
-        
+            url = `https://${this.bucketName}.s3.amazonaws.com/${key}`
+        }
+            
+            this.logger.log("Image upload complete!")
+        return url;
     }
 
 
-    async isFolderExistsInS3Bucket(folderName:string) {
+    private async isFolderExistsInS3Bucket(folderName:string) {
        
         const command = new ListObjectsCommand({
                 Bucket: this.bucketName,

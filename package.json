@@ -29,7 +29,9 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "client": "link:@types/prisma/client",
+    "deep-parse-json": "^2.0.0",
     "helmet": "^8.1.0",
+    "lodash": "^4.17.21",
     "multer": "^2.0.2",
     "reflect-metadata": "^0.2.2",
     "uuid": "^13.0.0"

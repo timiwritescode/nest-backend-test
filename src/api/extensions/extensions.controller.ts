@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { ExtensionsService } from './extensions.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateExtensionDTO } from './dtos/create-extension.dto';
 import { SuccessResponseDTO } from 'src/shared/dtos/success-response.dto';
 import { ExtensionDTO } from './dtos/extension.dto';
+import { ParseFormDataJsonPipe } from 'src/core/pipes/form-fields-transfomer.pipe';
+import { ImageValidationPipe } from 'src/core/pipes/image-validation.pipe';
 
 @Controller('extensions')
 export class ExtensionsController {
@@ -12,15 +14,26 @@ export class ExtensionsController {
     ) {}
 
     @Post()
-    @UseInterceptors(FileInterceptor('avatar'))
+    @UseInterceptors(FileInterceptor('avatar', {
+        limits: {
+            fileSize: 2 * 1024 * 1024,
+            
+        }
+    }))
     async createExtension(
-        @UploadedFile()
+        @Body(
+             new ParseFormDataJsonPipe({ except: ['avatar']}),
+            new ValidationPipe({transform: true, whitelist: true})            
+        )
+        dto: CreateExtensionDTO,
+
+        @UploadedFile(
+            new ImageValidationPipe()
+        )
         avatar: Express.Multer.File,
 
-        @Body()
-        dto: CreateExtensionDTO
     ): Promise<SuccessResponseDTO<ExtensionDTO>> {
-        return await this.extensionService.createExtension(dto);
+        return await this.extensionService.createExtension(dto, avatar);
     }
 
     @Get()

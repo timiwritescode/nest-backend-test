@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { ExtensionStatus } from "../extension-status.dto";
+import { ExtensionStatus } from "../extension-status";
 
 export class CreateExtensionDTO {
     @IsNotEmpty()

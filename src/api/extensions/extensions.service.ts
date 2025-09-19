@@ -14,7 +14,6 @@ export class ExtensionsService {
         private readonly awsService: AwsService) {}
 
     async createExtension(dto: CreateExtensionDTO, image?: Express.Multer.File): Promise<SuccessResponseDTO<ExtensionDTO>> {
-        // TODO: add file service to upload file
         let imageURL: string;
 
         if (image) {
