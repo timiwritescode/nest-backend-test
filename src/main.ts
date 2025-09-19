@@ -42,7 +42,7 @@ async function bootstrap() {
         console.log(error.message)
       }
 
-    }, 25000)
+    }, 10000)
   }
 }
 bootstrap();
