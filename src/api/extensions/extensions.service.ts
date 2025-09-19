@@ -15,7 +15,6 @@ export class ExtensionsService {
 
     async createExtension(dto: CreateExtensionDTO, image?: Express.Multer.File): Promise<SuccessResponseDTO<ExtensionDTO>> {
         let imageURL: string;
-
         if (image) {
             imageURL = await this.uploadImageToAws(image)
         }
@@ -40,7 +39,9 @@ export class ExtensionsService {
         return await this.awsService.uploadSingleFile(image, imageHash)
     }
 
-    async getExtensions() {}
+    async getExtensions(page = 1, pageSize=12) {
+
+    }
 
     async getExtensionById(extensionId: string) {}
 
