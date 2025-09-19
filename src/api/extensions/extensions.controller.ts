@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile,
 import { ExtensionsService } from './extensions.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateExtensionDTO } from './dtos/create-extension.dto';
-import { SuccessResponseDTO } from 'src/shared/success-response.dto';
+import { SuccessResponseDTO } from 'src/shared/dtos/success-response.dto';
 import { ExtensionDTO } from './dtos/extension.dto';
 
 @Controller('extensions')
