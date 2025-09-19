@@ -17,7 +17,7 @@ export class AllExceptionsFilter implements ExceptionFilter{
         const statusCode = exception instanceof HttpException ? exception.getStatus() : 500;
         const message = exception instanceof HttpException ? exception.message : "An error occured";
 
-
+        
           const stack = exception instanceof Error ? exception.stack : null;
         
        

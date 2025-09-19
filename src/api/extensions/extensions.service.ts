@@ -81,31 +81,30 @@ export class ExtensionsService {
     dto: UpdateExtensionDTO, 
     avatar?: Express.Multer.File
     ) {
-        try {
-            if (avatar) {
-            const imageURL = await this.uploadImageToAws(avatar);
-            dto['avatarURL'] = imageURL;
-            }
+        const extensionInDB = await this.prisma.extension.findUnique({
+        where: { id: extensionId },
+        });
 
-            const updatedExtension = await this.prisma.extension.update({
-            where: { id: extensionId },
-            data: dto,
-            });
+        if (!extensionInDB) {
+        throw new NotFoundException(ERROR_EXTENSION_NOT_FOUND_MESSAGE);
+        }
 
-            return new SuccessResponseDTO(
-            EXTENSION_UPDATED,
-            HttpStatus.OK,
-            new ExtensionDTO(updatedExtension),
-            );
-        } catch (error) {
-            if (
-            error instanceof Prisma.PrismaClientKnownRequestError &&
-            error.code === 'P2025'
-            ) {
-            throw new NotFoundException(ERROR_EXTENSION_NOT_FOUND_MESSAGE);
-            };
-            throw error; // all errors handled in global exception
-        } 
+        
+        if (avatar) {
+        const imageURL = await this.uploadImageToAws(avatar);
+        dto['avatarURL'] = imageURL;
+        }
+
+        const updatedExtension = await this.prisma.extension.update({
+        where: { id: extensionId },
+        data: dto,
+        });
+
+        return new SuccessResponseDTO(
+        EXTENSION_UPDATED,
+        HttpStatus.OK,
+        new ExtensionDTO(updatedExtension),
+        );
     }
 
     async deleteExtension(extensionId: string): Promise<SuccessResponseDTO<void>> {
