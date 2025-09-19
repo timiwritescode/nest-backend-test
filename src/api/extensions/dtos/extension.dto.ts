@@ -1,0 +1,25 @@
+import { Extension } from "@prisma/client";
+
+
+export class ExtensionDTO {
+    name: string;
+    status: string;
+    description: string
+    avatarUrl: string
+
+    constructor(extension: Extension) {
+        this.name = extension.name;
+        this.status = extension.status;
+        this.description = extension.description;
+    }
+
+}
+
+
+export class MultipleExtensionsDTO {
+    extensions: ExtensionDTO[];
+
+    constructor(extensions: Extension[]) {
+        this.extensions = extensions.map(extension => new ExtensionDTO(extension));
+    }
+}

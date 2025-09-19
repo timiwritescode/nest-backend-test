@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -9,12 +8,17 @@ datasource db {
 }
 
 
+enum ExtensionStatus {
+  active
+  inactive
+}
+
 model Extension {
   id String @id @default(uuid())
   name String
-  description String?
-  active Boolean @default(false)
-  avatarURL String?
+  description String? @db.Text
+  status ExtensionStatus @default(inactive)
+  avatarURL String? @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
