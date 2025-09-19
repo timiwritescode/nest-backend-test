@@ -4,7 +4,7 @@ import { ExtensionStatus } from "../extension-status";
 export class CreateExtensionDTO {
     @IsNotEmpty()
     @IsString()
-    extensionName: string;
+    name: string;
 
     @IsNotEmpty()
     @IsString()

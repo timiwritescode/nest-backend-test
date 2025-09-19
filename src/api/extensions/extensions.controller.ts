@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UploadedFile, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { ExtensionsService } from './extensions.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateExtensionDTO } from './dtos/create-extension.dto';
@@ -6,6 +6,8 @@ import { SuccessResponseDTO } from 'src/shared/dtos/success-response.dto';
 import { ExtensionDTO } from './dtos/extension.dto';
 import { ParseFormDataJsonPipe } from 'src/core/pipes/form-fields-transfomer.pipe';
 import { ImageValidationPipe } from 'src/core/pipes/image-validation.pipe';
+import { UpdateExtensionDTO } from './dtos/update-extension.dto';
+import { imageConfig } from './image-config';
 
 @Controller('extensions')
 export class ExtensionsController {
@@ -16,7 +18,7 @@ export class ExtensionsController {
     @Post()
     @UseInterceptors(FileInterceptor('avatar', {
         limits: {
-            fileSize: 2 * 1024 * 1024,
+            fileSize: imageConfig.maxSize,
             
         }
     }))
@@ -57,12 +59,30 @@ export class ExtensionsController {
     }
 
     @Patch(":extensionId")
+    @UseInterceptors(FileInterceptor('avatarImage', {
+        limits: {fileSize: imageConfig.maxSize}
+    }))
     async editExtension(
-        @Param('extensionId') extensionId: string
-    ) {}
+        @Param('extensionId') extensionId: string,
+        
+        @Body(
+             new ParseFormDataJsonPipe({ except: ['avatarImage']}),
+            new ValidationPipe({transform: true, whitelist: true})            
+        )
+        dto: UpdateExtensionDTO,
+
+        @UploadedFile(
+            new ImageValidationPipe()
+        )
+        avatar: Express.Multer.File
+        
+    ): Promise<SuccessResponseDTO<ExtensionDTO>> {
+        return await this.extensionService.updateExtension(extensionId, dto, avatar)
+    } 
 
     @Delete(":extensionId")
+    @HttpCode(HttpStatus.NO_CONTENT)
     async deleteExtension(
         @Param('extensionId') extensionId: string
-    ) {}
+    ): Promise<void> {}
 }

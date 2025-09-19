@@ -1,0 +1,1 @@
+export const ERROR_EXTENSION_NOT_FOUND_MESSAGE = "Extension with that ID not found"
